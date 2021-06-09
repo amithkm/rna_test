@@ -1,0 +1,4 @@
+azure-core==1.13.0
+azure-eventhub==5.4.0
+azure-iot-device==2.5.1
+azure-iot-hub==2.3.0

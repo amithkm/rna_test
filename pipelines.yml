@@ -1,0 +1,87 @@
+resources:
+  - name: dbp_repo
+    type: GitRepo
+    configuration:
+      gitProvider: rnaiot_git_trigger                       # <-- replace with your integration
+      path: nagarjunr/microservice-rnaiot-msgprocess    # <-- replace with your repository name
+      branches:
+        include: master
+      buildOn: # <-- To trigger auto-build when there is code commit - By defualt this is ON, so need not define explicitly
+        commit: true
+        pullRequestCreate: true
+
+
+  - name: dbp_image
+    type: Image
+    configuration:
+      registry: rnaiot_docker_create                                # <-- replace with your artifactory integration
+      sourceRepository: rnaiot-msgprocess               # <-- required if registry is Artifactory
+      imageName: nagarjun.jfrog.io/rnaiot-msgprocess/iotmsgprocess   # < -- replace with your image path and name
+      imageTag: latest
+      autoPull: true
+      
+  - name: dbp_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: rnaiot_docker_create # <-- replace with your artifactory integration
+      buildName: dbp_build
+      buildNumber: 1    
+
+  - name: dbp_promoted_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: rnaiot_docker_create # <-- replace with your artifactory integration
+      buildName: dbp_build
+      buildNumber: 1
+      
+
+pipelines:
+  - name: rnaiot_pipeline_dbp
+    steps:
+      - name: docker_build
+        type: DockerBuild
+        configuration:
+          affinityGroup: dbp_group
+          dockerFileLocation: .
+          dockerFileName: Dockerfile
+          dockerImageName: nagarjun.jfrog.io/rnaiot-msgprocess/iotmsgprocess  # replace with your image path and name
+          #dockerImageTag: ${run_number}
+          dockerImageTag: latest
+          inputResources:
+            - name: dbp_repo
+              #  To trigger pipeline automatically - By defualt this is ON, so need not define explicitly
+              trigger: true
+          integrations:
+            - name: rnaiot_docker_create                            # <-- replace with your artifactory integration
+
+      - name: docker_push
+        type: DockerPush
+        configuration:
+          affinityGroup: dbp_group
+          targetRepository: rnaiot-msgprocess
+          integrations:
+            - name: rnaiot_docker_create                            # <-- replace with your artifactory integration
+          inputSteps:
+            - name: docker_build
+          outputResources:
+            - name: dbp_image
+
+      - name: publish_dbp_build
+        type: PublishBuildInfo
+        configuration:
+          inputSteps:
+            - name: docker_push
+          outputResources:
+            - name: dbp_build_info
+
+      - name: promote_dbp_build
+        type: PromoteBuild
+        configuration:
+          targetRepository: rnaiot-msgprocess
+          integrations:
+            - name: rnaiot_docker_create  # <-- replace with your artifactory integration
+          inputResources:
+            - name: dbp_build_info
+          outputResources:
+            - name: dbp_promoted_build_info
+
