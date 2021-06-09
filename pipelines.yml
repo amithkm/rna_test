@@ -2,8 +2,8 @@ resources:
   - name: dbp_repo
     type: GitRepo
     configuration:
-      gitProvider: rnaiot_git_trigger                       # <-- replace with your integration
-      path: nagarjunr/microservice-rnaiot-msgprocess    # <-- replace with your repository name
+      gitProvider: nagarjuntestpipelinegit                       # <-- replace with your integration
+      path: amithkm/rna_test    # <-- replace with your repository name
       branches:
         include: master
       buildOn: # <-- To trigger auto-build when there is code commit - By defualt this is ON, so need not define explicitly
@@ -14,23 +14,23 @@ resources:
   - name: dbp_image
     type: Image
     configuration:
-      registry: rnaiot_docker_create                                # <-- replace with your artifactory integration
-      sourceRepository: rnaiot-msgprocess               # <-- required if registry is Artifactory
-      imageName: nagarjun.jfrog.io/rnaiot-msgprocess/iotmsgprocess   # < -- replace with your image path and name
+      registry: nagarjunarttoken                                # <-- replace with your artifactory integration
+      sourceRepository: docker               # <-- required if registry is Artifactory
+      imageName: swarnenduk-docker.jfrog.io/alpine/terragru   # < -- replace with your image path and name
       imageTag: latest
       autoPull: true
       
   - name: dbp_build_info
     type: BuildInfo
     configuration:
-      sourceArtifactory: rnaiot_docker_create # <-- replace with your artifactory integration
+      sourceArtifactory: nagarjunarttoken # <-- replace with your artifactory integration
       buildName: dbp_build
       buildNumber: 1    
 
   - name: dbp_promoted_build_info
     type: BuildInfo
     configuration:
-      sourceArtifactory: rnaiot_docker_create # <-- replace with your artifactory integration
+      sourceArtifactory: nagarjunarttoken # <-- replace with your artifactory integration
       buildName: dbp_build
       buildNumber: 1
       
@@ -44,7 +44,7 @@ pipelines:
           affinityGroup: dbp_group
           dockerFileLocation: .
           dockerFileName: Dockerfile
-          dockerImageName: nagarjun.jfrog.io/rnaiot-msgprocess/iotmsgprocess  # replace with your image path and name
+          dockerImageName: swarnenduk-docker.jfrog.io/alpine/terragru  # replace with your image path and name
           #dockerImageTag: ${run_number}
           dockerImageTag: latest
           inputResources:
@@ -52,15 +52,15 @@ pipelines:
               #  To trigger pipeline automatically - By defualt this is ON, so need not define explicitly
               trigger: true
           integrations:
-            - name: rnaiot_docker_create                            # <-- replace with your artifactory integration
+            - name: nagarjunarttoken                            # <-- replace with your artifactory integration
 
       - name: docker_push
         type: DockerPush
         configuration:
           affinityGroup: dbp_group
-          targetRepository: rnaiot-msgprocess
+          targetRepository: docker
           integrations:
-            - name: rnaiot_docker_create                            # <-- replace with your artifactory integration
+            - name: nagarjunarttoken                            # <-- replace with your artifactory integration
           inputSteps:
             - name: docker_build
           outputResources:
@@ -77,9 +77,9 @@ pipelines:
       - name: promote_dbp_build
         type: PromoteBuild
         configuration:
-          targetRepository: rnaiot-msgprocess
+          targetRepository: docker
           integrations:
-            - name: rnaiot_docker_create  # <-- replace with your artifactory integration
+            - name: nagarjunarttoken # <-- replace with your artifactory integration
           inputResources:
             - name: dbp_build_info
           outputResources:
