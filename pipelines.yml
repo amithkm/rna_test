@@ -6,6 +6,9 @@ resources:
       path: amithkm/rna_test    # <-- replace with your repository name
       branches:
         include: master
+      buildOn: # <-- To trigger auto-build when there is code commit - By defualt this is ON, so need not define explicitly
+        commit: true
+        pullRequestCreate: true
 
 
   - name: dbp_image
