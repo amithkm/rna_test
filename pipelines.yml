@@ -1,5 +1,5 @@
 resources:
-  - name: dbp_repo
+  - name: dbp_repo_1
     type: GitRepo
     configuration:
       gitProvider: jfrogsupport_test_git                       # <-- replace with your integration
@@ -17,14 +17,14 @@ resources:
       imageTag: latest
       autoPull: true
       
-  - name: dbp_build_info
+  - name: dbp_build_info_1
     type: BuildInfo
     configuration:
       sourceArtifactory: jfrogsupport_testart # <-- replace with your artifactory integration
       buildName: dbp_build
       buildNumber: 1    
 
-  - name: dbp_promoted_build_info
+  - name: dbp_promoted_build_info_1
     type: BuildInfo
     configuration:
       sourceArtifactory: jfrogsupport_testart # <-- replace with your artifactory integration
@@ -45,7 +45,7 @@ pipelines:
           #dockerImageTag: ${run_number}
           dockerImageTag: latest
           inputResources:
-            - name: dbp_repo
+            - name: dbp_repo_1
               #  To trigger pipeline automatically - By defualt this is ON, so need not define explicitly
               trigger: true
           integrations:
@@ -78,7 +78,7 @@ pipelines:
           integrations:
             - name: jfrogsupport_testart # <-- replace with your artifactory integration
           inputResources:
-            - name: dbp_build_info
+            - name: dbp_build_info_1
           outputResources:
-            - name: dbp_promoted_build_info
+            - name: dbp_promoted_build_info_1
             
