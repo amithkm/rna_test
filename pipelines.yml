@@ -61,7 +61,7 @@ pipelines:
           inputSteps:
             - name: docker_build
           outputResources:
-            - name: dbp_image
+            - name: dbp_image_2
 
       - name: publish_dbp_build
         type: PublishBuildInfo
