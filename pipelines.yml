@@ -16,7 +16,7 @@ resources:
     configuration:
       registry: nagarjunarttoken                                # <-- replace with your artifactory integration
       sourceRepository: docker               # <-- required if registry is Artifactory
-      imageName: amithmutak.jfrog.io/artifactory/docker/alpine/terragru   # < -- replace with your image path and name
+      imageName: amithmutak.jfrog.io/artifactory/alpine/terragru   # < -- replace with your image path and name
       imageTag: latest
       autoPull: true
       
@@ -44,7 +44,7 @@ pipelines:
           affinityGroup: dbp_group
           dockerFileLocation: .
           dockerFileName: Dockerfile
-          dockerImageName: amithmutak.jfrog.io/artifactory/docker/alpine/terragru   # replace with your image path and name
+          dockerImageName: amithmutak.jfrog.io/artifactory/alpine/terragru   # replace with your image path and name
           #dockerImageTag: ${run_number}
           dockerImageTag: latest
           inputResources:
