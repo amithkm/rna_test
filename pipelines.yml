@@ -8,7 +8,7 @@ resources:
         include: master
 
 
-  - name: dbp_image
+  - name: dbp_image_2
     type: Image
     configuration:
       registry: nagarjunarttoken                                # <-- replace with your artifactory integration
